@@ -1,0 +1,47 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+	"align": [true, "statements"],
+	"comment-format": false,
+	"eofline": false,
+	"indent": [
+	  "tabs"
+	],
+	"interface-name": false,
+	"no-console": false,
+	"no-constructor-vars": true,
+	"no-namespace": false,
+	"no-reference": false,
+	"quotemark": false,
+	"trailing-comma": false,
+	"typedef": [
+	  true,
+	  "call-signature",
+	  "parameter",
+	  "arrow-parameter",
+	  "property-declaration",
+	  "variable-declaration",
+	  "member-variable-declaration"
+	],
+	"typedef-whitespace":
+	[
+	  true,
+	  {
+		"call-signature": "nospace",
+		"index-signature": "nospace",
+		"parameter": "nospace",
+		"property-declaration": "nospace",
+		"variable-declaration": "nospace"
+	  },
+	  {
+		"call-signature": "onespace",
+		"index-signature": "onespace",
+		"parameter": "onespace",
+		"property-declaration": "onespace",
+		"variable-declaration": "onespace"
+	  }
+	]
+  },
+  "rulesDirectory": [
+  ]
+}

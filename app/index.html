@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Map App</title>
+
+	<link rel="apple-touch-icon" sizes="57x57" href="icons/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="icons/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="icons/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="icons/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="icons/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="icons/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="icons/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="icons/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+	<meta name="theme-color" content="#000000">
+	<link rel="manifest" href="manifest.json">
+	<meta name="msapplication-TileColor" content="#000000">
+	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+	<meta name="msapplication-config" content="browserconfig.xml">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<!-- build:inlinecss -->
+	<link rel="stylesheet" href="style/inline.css">
+	<!-- endbuild -->
+</head>
+<body>
+
+<header>
+	<div id="header-branding">
+		<!--Icon-->
+		<h1 id="header-title">Map App</h1>
+	</div>
+	<div id="header-user">
+		<!--Log In/Profile Pic-->
+		<div id="header-user-profile" data-bind="visible: loggedIn()">
+			<img id="header-user-pic" data-bind="click: MapApp.toggleUserPanel, attr: {src: photo, title: name}">
+			<div id="panel-user">
+				<a class="app-link" data-bind="click: MapApp.logOut">Log out</a>
+			</div>
+		</div>
+		<div id="header-user-login" class="hidden" data-bind="visible: !loggedIn()">
+			<a class="app-link" data-bind="click: MapApp.logIn">Log in</a>
+		</div>
+	</div>
+	<div id="nav-button" onclick="MapApp.toggleControls()">&#x2630;</div>
+</header>
+<div id="message"></div>
+<div id="overlay"></div>
+
+<main>
+	<div id="controls">
+		<h2>BART Stations</h2>
+		<input id="filter" placeholder="Search" type="text">
+		<div id="location-list" data-bind="foreach: locations">
+			<div class="listing" data-bind="visible: visible(), css: { selected: selected }">
+				<h3 class="listing-title" data-bind="click: $root.listClick, text: title"></h3>
+				<div data-bind="visible: selected()">
+					<div class="foursquare" data-bind="with: info">
+						<div data-bind="visible: loaded()">
+							<img data-bind="attr: { src: photo }">
+							<div data-bind="text: tip"></div>
+							<div class="foursquare-credit">Data provided by FourSquare</div>
+						</div>
+						<div data-bind="visible: error()">
+							More information unavailable at this time.
+						</div>
+					</div>
+					<div class="comments">
+						<h4>Comments</h4>
+						<div data-bind="visible: $parent.online()">
+							<div data-bind="visible: $parent.user().id()">
+								<div data-bind="visible: comments().length == 0">No comments yet. Be the first!</div>
+								<div data-bind="visible: comments().length, foreach: comments">
+									<div class="comment">
+										<img class="comment-image" data-bind="attr: {src: user().photo}">
+										<div>
+											<div data-bind="text: user().name">X</div>
+											<div data-bind="text: comment"></div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<div data-bind="visible: !$parent.user().id(), click: MapApp.logIn">Log in to view
+								comments.
+							</div>
+						</div>
+					</div>
+					<div>
+						<form data-bind="submit: comment">
+							<input placeholder="Comment" name="comment">
+							<input class="comment-submit" type="submit" value="Comment">
+						</form>
+					</div>
+					<div data-bind="visible: !$parent.online()">You are offline. Comments will appear once
+						reconnected.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="map"></div>
+</main>
+<footer>
+
+</footer>
+
+<script type="text/html" id="placeTemplate">
+	<li>
+		<span data-bind="text: name"></span>
+	</li>
+</script>
+
+<script type="text/html" id="headerUser">
+	<li>
+		<span data-bind="text: name"></span>
+	</li>
+</script>
+<!-- build:inlinejs -->
+<script type="text/javascript" src="script/loader.js"></script>
+<!-- endbuild -->
+<!-- build:js script/main.js -->
+<script type="text/javascript" src="libs/firebase.js"></script>
+<script type="text/javascript" src="libs/knockout-3.4.0-debug.js"></script>
+<script type="text/javascript" src="libs/knockout.mapping-2.4.1.debug.js"></script>
+<script type="text/javascript" src="script/utility.js"></script>
+<script type="text/javascript" src="script/app.js"></script>
+<!-- endbuild -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0qdoFG9CMdRjZf9SPGyTwdFDVgI6PSdc&callback=MapApp.initMap"></script>
+</body>
+</html>

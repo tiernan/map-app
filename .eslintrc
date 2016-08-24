@@ -1,0 +1,35 @@
+{
+  "extends": "eslint:recommended",
+  "env": {
+	"browser": true,
+	"node": true,
+	"jasmine": true
+  },
+  "globals": {
+	"Promise": true
+  },
+  "rules": {
+	"indent": [
+	  "error",
+	  "tab"
+	],
+	"linebreak-style": [
+	  "error",
+	  "unix"
+	],
+	"no-unused-vars": [
+	  "error",
+	  {
+		"vars": "local"
+	  }
+	],
+//	"quotes": [
+//	  "error",
+//	  "double"
+//	],
+	"semi": [
+	  "error",
+	  "always"
+	]
+  }
+}
