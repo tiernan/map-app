@@ -159,8 +159,13 @@ namespace MapApp {
 							+ "&client_secret=3QCFHJAMN22HR3SSMHB5MQHRQ4YSIPV1U4AKZ1KYKSFQP42J"
 							+ "&v=20160822")
 							.then(function (result: string): void {
-								// TODO: handle API error
 								let response: any = JSON.parse(result);
+
+								// reject if API responds with error
+								if (response.error) {
+									reject();
+								}
+
 								let venue: any = response.response.venue;
 								let bestPhoto: string;
 								let topTip: string;

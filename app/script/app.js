@@ -100,8 +100,11 @@ var MapApp;
                             + "&client_secret=3QCFHJAMN22HR3SSMHB5MQHRQ4YSIPV1U4AKZ1KYKSFQP42J"
                             + "&v=20160822")
                             .then(function (result) {
-                            // TODO: handle API error
                             var response = JSON.parse(result);
+                            // reject if API responds with error
+                            if (response.error) {
+                                reject();
+                            }
                             var venue = response.response.venue;
                             var bestPhoto;
                             var topTip;
