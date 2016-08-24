@@ -8,7 +8,7 @@ var BUILD = 'dist/',
 	minifyHTML = require('gulp-minify-html'),
 	minifyJS = require('gulp-uglify'),
 	minifyJSON = require('gulp-json-minify'),
-	rename = require('gulp-rename'),
+	prettyData = require('gulp-pretty-data'),
 	useMin = require('gulp-usemin');
 
 // Copy favicon.ico to build
@@ -40,11 +40,10 @@ gulp.task('html', function() {
 
 // Minify icons
 gulp.task('icons', function() {
-		return gulp.src(SOURCE + 'icons/*')
-			.pipe(imageMin())
-			.pipe(gulp.dest(BUILD + 'icons'));
-	}
-);
+	return gulp.src(SOURCE + 'icons/*')
+		.pipe(imageMin())
+		.pipe(gulp.dest(BUILD + 'icons'));
+});
 
 // Minify JSON data
 gulp.task('minify-json', function() {
@@ -53,9 +52,15 @@ gulp.task('minify-json', function() {
 		.pipe(gulp.dest(BUILD));
 });
 
+// Minify XML files
+gulp.task('minify-xml', function() {
+	return gulp.src(SOURCE + '**/*.xml')
+		.pipe(prettyData({type: 'minify', preserveComments: false}))
+		.pipe(gulp.dest(BUILD));
+});
 
 // Build
-gulp.task('build', ['copy-favicon', 'html', 'icons', 'minify-json']);
+gulp.task('build', ['copy-favicon', 'html', 'icons', 'minify-json', 'minify-xml']);
 
 // Run local web server
 gulp.task('web-server', function() {
