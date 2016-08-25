@@ -12,6 +12,7 @@
 	"no-constructor-vars": true,
 	"no-namespace": false,
 	"no-reference": false,
+	"only-arrow-functions": false,
 	"quotemark": false,
 	"trailing-comma": false,
 	"typedef": [
