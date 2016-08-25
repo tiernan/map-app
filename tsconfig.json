@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
 	"module": "commonjs",
+	"newLine": "LF",
 	"target": "es5",
 	"sourceMap": true
   },
   "exclude": [
+	"custom_typings",
 	"node_modules"
   ]
 }
