@@ -45,6 +45,13 @@ gulp.task('icons', function() {
 		.pipe(gulp.dest(BUILD + 'icons'));
 });
 
+// Minify JS Polyfills
+gulp.task('minify-js-polyfills', function() {
+	return gulp.src(SOURCE + 'script/polyfill/*.js')
+		.pipe(minifyJS())
+		.pipe(gulp.dest(BUILD + 'script/polyfill'));
+});
+
 // Minify JSON data
 gulp.task('minify-json', function() {
 	return gulp.src(SOURCE + '**/*.json')
