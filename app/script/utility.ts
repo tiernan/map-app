@@ -1,8 +1,4 @@
 "use strict";
-interface DataArray {
-	[index: string]: string;
-}
-
 //noinspection TsLint
 function loadScript(url: string, callback?: (e: Event) => any): void {
 	let script: HTMLScriptElement = document.createElement('script');
@@ -15,7 +11,7 @@ function loadScript(url: string, callback?: (e: Event) => any): void {
 // load JSON data from url or file and callback once loaded
 //noinspection TsLint
 function loadJSON(url: string): Promise<string> {
-	return new Promise(function(resolve, reject) {
+	return new Promise(function(resolve: (response: string) => void, reject: (reason?: string) => void): void {
 		let XHR: XMLHttpRequest = new XMLHttpRequest();
 		// override MIME in case server is misconfigured.
 		XHR.overrideMimeType("application/json");
