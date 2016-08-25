@@ -15,6 +15,7 @@
  * @email tiernanc@gmail.com
  * @license: ISC
  */
+/// <reference path="../../custom_typings/firebase.ts" />
 "use strict";
 // Namespace MapApp
 var MapApp;
@@ -321,7 +322,7 @@ var MapApp;
                 .then(function (jsonData) {
                 self.loaded = true;
                 ko.mapping.fromJS(JSON.parse(jsonData), {
-                    "locations": {
+                    locations: {
                         create: function (options) {
                             return new MapLocation(options.data, self.currentLocation);
                         },
@@ -534,21 +535,22 @@ var MapApp;
     }
     MapApp.toggleUserPanel = toggleUserPanel;
     // toggle controls for small screens
+    //noinspection JSUnusedLocalSymbols
     function toggleControls() {
         activePanel = controls;
         controls.classList.toggle('active');
         overlayPane.classList.toggle('active');
     }
     MapApp.toggleControls = toggleControls;
-    //noinspection JSUnusedLocalSymbols
     // attempt to log the user in
+    //noinspection JSUnusedLocalSymbols
     function logIn() {
         // Authenticate user with a Firebase Popup
         firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     }
     MapApp.logIn = logIn;
-    //noinspection JSUnusedLocalSymbols
     // load the user out
+    //noinspection JSUnusedLocalSymbols
     function logOut() {
         toggleUserPanel();
         firebase.auth().signOut();

@@ -15,9 +15,11 @@
  * @email tiernanc@gmail.com
  * @license: ISC
  */
+/// <reference path="../../custom_typings/firebase.ts" />
 "use strict";
 
 declare namespace google.maps {
+	//noinspection JSUnusedLocalSymbols
 	interface InfoWindow {
 		marker: Marker;
 	}
@@ -61,10 +63,6 @@ namespace MapApp {
 	let userPopup: HTMLElement = document.getElementById('panel-user');
 	let controls: HTMLElement = document.getElementById('controls');
 	let overlayPane: HTMLElement = document.getElementById('overlay');
-
-	interface AppData {
-		locations: Array<MapLocation>;
-	}
 
 	interface LocationInfo {
 		photo: string;
@@ -423,11 +421,11 @@ namespace MapApp {
 				.then(function (jsonData: string): void {
 					self.loaded = true;
 					ko.mapping.fromJS(JSON.parse(jsonData), {
-						"locations": {
-							create: function (options: KnockoutMappingCreateOptions): MapLocation {
+						locations: {
+							create(options: KnockoutMappingCreateOptions): MapLocation {
 								return new MapLocation(options.data, self.currentLocation);
 							},
-							key: function (data: MapLocation): string {
+							key(data: MapLocation): string {
 								return ko.utils.unwrapObservable(data.placeID);
 							}
 						}
@@ -539,11 +537,11 @@ namespace MapApp {
 	// if new user, register their info in firebase
 	function writeUserData(id: string, name: string, email: string, photo: string): Promise<void> {
 		return database.ref('users/' + id).set({
-			name: name,
-			photo: photo
+			name,
+			photo
 		}).then(function (): void {
 			database.ref('usersPrivate/' + id).set({
-				email: email
+				email
 			});
 		});
 	}
@@ -671,21 +669,22 @@ namespace MapApp {
 	}
 
 	// toggle controls for small screens
+	//noinspection JSUnusedLocalSymbols
 	export function toggleControls(): void {
 		activePanel = controls;
 		controls.classList.toggle('active');
 		overlayPane.classList.toggle('active');
 	}
 
-	//noinspection JSUnusedLocalSymbols
 	// attempt to log the user in
+	//noinspection JSUnusedLocalSymbols
 	export function logIn(): void {
 		// Authenticate user with a Firebase Popup
 		firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
 	}
 
-	//noinspection JSUnusedLocalSymbols
 	// load the user out
+	//noinspection JSUnusedLocalSymbols
 	export function logOut(): void {
 		toggleUserPanel();
 		firebase.auth().signOut();
