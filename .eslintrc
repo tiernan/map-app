@@ -6,12 +6,17 @@
 	"jasmine": true
   },
   "globals": {
-	"Promise": true
+	"Promise": true,
+	"google": true,
+	"firebase": true,
+	"isIE": true,
+	"ko": true,
+	"loadJSON": true,
+	"loadScript": true
   },
   "rules": {
 	"indent": [
-	  "error",
-	  "tab"
+	  "off"
 	],
 	"linebreak-style": [
 	  "error",
