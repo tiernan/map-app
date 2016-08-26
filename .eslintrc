@@ -15,23 +15,10 @@
 	"loadScript": true
   },
   "rules": {
-	"indent": [
-	  "off"
-	],
-	"linebreak-style": [
-	  "error",
-	  "unix"
-	],
-	"no-unused-vars": [
-	  "error",
-	  {
-		"vars": "local"
-	  }
-	],
+	"indent": ["off"],
+	"linebreak-style": ["error", "unix"],
+	"no-unused-vars": ["error", {"vars": "local"}],
 	"quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
-	"semi": [
-	  "error",
-	  "always"
-	]
+	"semi": ["error", "always"]
   }
 }
