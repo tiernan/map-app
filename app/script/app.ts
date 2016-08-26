@@ -16,7 +16,7 @@
  * @license: ISC
  */
 /// <reference path="../../custom_typings/firebase.ts" />
-"use strict";
+'use strict';
 
 declare namespace google.maps {
 	//noinspection JSUnusedLocalSymbols
@@ -152,10 +152,10 @@ namespace MapApp {
 					): void {
 						self.state(States.LOADING);
 						loadJSON(
-							"https://api.foursquare.com/v2/venues/" + self.id
-							+ "?client_id=M5DVPTFIAEL4YNMUSLFGGCWAAIQAS4QXEEVNN25PMX00PQJI"
-							+ "&client_secret=3QCFHJAMN22HR3SSMHB5MQHRQ4YSIPV1U4AKZ1KYKSFQP42J"
-							+ "&v=20160822")
+							'https://api.foursquare.com/v2/venues/' + self.id
+							+ '?client_id=M5DVPTFIAEL4YNMUSLFGGCWAAIQAS4QXEEVNN25PMX00PQJI'
+							+ '&client_secret=3QCFHJAMN22HR3SSMHB5MQHRQ4YSIPV1U4AKZ1KYKSFQP42J'
+							+ '&v=20160822')
 							.then(function (result: string): void {
 								let response: any = JSON.parse(result);
 
@@ -578,10 +578,10 @@ namespace MapApp {
 
 		// initialize Firebase
 		firebase.initializeApp({
-			apiKey: "AIzaSyCBVzGJFaKojZfr6U3sOUqbA0x33ZmzzWU",
-			authDomain: "map-app-bc95b.firebaseapp.com",
-			databaseURL: "https://map-app-bc95b.firebaseio.com",
-			storageBucket: "map-app-bc95b.appspot.com"
+			apiKey: 'AIzaSyCBVzGJFaKojZfr6U3sOUqbA0x33ZmzzWU',
+			authDomain: 'map-app-bc95b.firebaseapp.com',
+			databaseURL: 'https://map-app-bc95b.firebaseio.com',
+			storageBucket: 'map-app-bc95b.appspot.com'
 		});
 
 		// attach firebase DB to app
@@ -627,7 +627,7 @@ namespace MapApp {
 		});
 
 		// monitor offline/online status
-		database.ref(".info/connected").on("value", function (snapshot: DataSnapshot): void {
+		database.ref('.info/connected').on('value', function (snapshot: DataSnapshot): void {
 			if (snapshot.val() === true) {
 				main.online(true);
 				if (main.loaded) {

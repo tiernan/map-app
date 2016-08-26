@@ -16,7 +16,7 @@
  * @license: ISC
  */
 /// <reference path="../../custom_typings/firebase.ts" />
-"use strict";
+'use strict';
 // Namespace MapApp
 var MapApp;
 (function (MapApp) {
@@ -96,10 +96,10 @@ var MapApp;
                 default:
                     this.promise = new Promise(function (resolve, reject) {
                         self.state(States.LOADING);
-                        loadJSON("https://api.foursquare.com/v2/venues/" + self.id
-                            + "?client_id=M5DVPTFIAEL4YNMUSLFGGCWAAIQAS4QXEEVNN25PMX00PQJI"
-                            + "&client_secret=3QCFHJAMN22HR3SSMHB5MQHRQ4YSIPV1U4AKZ1KYKSFQP42J"
-                            + "&v=20160822")
+                        loadJSON('https://api.foursquare.com/v2/venues/' + self.id
+                            + '?client_id=M5DVPTFIAEL4YNMUSLFGGCWAAIQAS4QXEEVNN25PMX00PQJI'
+                            + '&client_secret=3QCFHJAMN22HR3SSMHB5MQHRQ4YSIPV1U4AKZ1KYKSFQP42J'
+                            + '&v=20160822')
                             .then(function (result) {
                             var response = JSON.parse(result);
                             // reject if API responds with error
@@ -446,10 +446,10 @@ var MapApp;
         });
         // initialize Firebase
         firebase.initializeApp({
-            apiKey: "AIzaSyCBVzGJFaKojZfr6U3sOUqbA0x33ZmzzWU",
-            authDomain: "map-app-bc95b.firebaseapp.com",
-            databaseURL: "https://map-app-bc95b.firebaseio.com",
-            storageBucket: "map-app-bc95b.appspot.com"
+            apiKey: 'AIzaSyCBVzGJFaKojZfr6U3sOUqbA0x33ZmzzWU',
+            authDomain: 'map-app-bc95b.firebaseapp.com',
+            databaseURL: 'https://map-app-bc95b.firebaseio.com',
+            storageBucket: 'map-app-bc95b.appspot.com'
         });
         // attach firebase DB to app
         database = firebase.database();
@@ -492,7 +492,7 @@ var MapApp;
             }
         });
         // monitor offline/online status
-        database.ref(".info/connected").on("value", function (snapshot) {
+        database.ref('.info/connected').on('value', function (snapshot) {
             if (snapshot.val() === true) {
                 main.online(true);
                 if (main.loaded) {

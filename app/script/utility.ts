@@ -14,7 +14,7 @@ function loadJSON(url: string): Promise<string> {
 	return new Promise(function(resolve: (response: string) => void, reject: (reason?: string) => void): void {
 		let XHR: XMLHttpRequest = new XMLHttpRequest();
 		// override MIME in case server is misconfigured.
-		XHR.overrideMimeType("application/json");
+		XHR.overrideMimeType('application/json');
 		XHR.open('GET', url, true);
 
 		XHR.onerror = function(): void {

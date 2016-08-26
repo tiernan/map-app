@@ -2,6 +2,6 @@
 var MapApp = {
     librariesLoaded: {},
     initMap: function() {
-        this.librariesLoaded["GoogleMaps"] = true;
+        this.librariesLoaded['GoogleMaps'] = true;
     }
 };
