@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 //noinspection TsLint
 function loadScript(url, callback) {
     var script = document.createElement('script');
