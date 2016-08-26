@@ -13,7 +13,7 @@
 	"no-namespace": false,
 	"no-reference": false,
 	"only-arrow-functions": false,
-	"quotemark": false,
+	"quotemark": [true, "single", "avoid-escape"],
 	"trailing-comma": false,
 	"typedef": [
 	  true,
