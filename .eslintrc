@@ -28,10 +28,7 @@
 		"vars": "local"
 	  }
 	],
-//	"quotes": [
-//	  "error",
-//	  "double"
-//	],
+	"quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
 	"semi": [
 	  "error",
 	  "always"
