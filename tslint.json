@@ -3,10 +3,8 @@
   "rules": {
 	"align": [true, "statements"],
 	"comment-format": false,
-	"eofline": false,
-	"indent": [
-	  "tabs"
-	],
+	"eofline": true,
+	"indent": ["tabs"],
 	"interface-name": false,
 	"no-console": false,
 	"no-constructor-vars": true,
@@ -24,8 +22,7 @@
 	  "variable-declaration",
 	  "member-variable-declaration"
 	],
-	"typedef-whitespace":
-	[
+	"typedef-whitespace": [
 	  true,
 	  {
 		"call-signature": "nospace",
