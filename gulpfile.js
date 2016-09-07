@@ -66,8 +66,17 @@ gulp.task('minify-xml', function() {
 		.pipe(gulp.dest(BUILD));
 });
 
+// Compile TypeScript/Sass
+gulp.task('compile-super', ['sass', 'type-script']);
+
 // Build
-gulp.task('build', ['copy-favicon', 'html', 'icons', 'minify-json', 'minify-xml']);
+gulp.task('build', ['compile-super'], function() {
+	gulp.start('build-no-compile');
+});
+
+// Build without compiling TypeScript or Sass
+// This is for use with an IDE that already compiles these for you.
+gulp.task('build-no-compile', ['copy-favicon', 'html', 'icons', 'minify-json', 'minify-xml']);
 
 // Run local web server
 gulp.task('web-server', function() {
