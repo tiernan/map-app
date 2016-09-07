@@ -147,6 +147,122 @@ var MapApp;
         };
         return FourSquareInfo;
     }());
+    // main view (list and map)
+    var MainViewModel = (function () {
+        // construct using user model (for comment form)
+        function MainViewModel(userModel) {
+            var self = this;
+            this.locations = ko.observableArray([]);
+            this.currentLocation = ko.observable(null);
+            this.user = ko.observable(userModel);
+            this.userCache = {};
+            this.online = ko.observable(true);
+            this.loaded = false;
+            // load JSON data
+            this.load();
+            // function to change selected location
+            this.changeLocation = function (location) {
+                var previous = self.currentLocation();
+                // disable bounce animation if previous location was selected and is not the same
+                if (previous && previous !== location) {
+                    previous.marker.setAnimation(null);
+                    // stop watching firebase for previous location
+                    database.ref('/tips/' + previous.placeID).off();
+                }
+                self.currentLocation(location);
+                // start firebase monitoring back up on new location
+                if (location) {
+                    database.ref('/tips/' + location.placeID).on('value', function (snapshot) {
+                        var commentArray = [];
+                        var child;
+                        var data = snapshot.val();
+                        var _loop_1 = function() {
+                            if (data.hasOwnProperty(child)) {
+                                var otherUser_1;
+                                if (self.userCache[child]) {
+                                    otherUser_1 = self.userCache[child];
+                                }
+                                else {
+                                    otherUser_1 = new PublicUserModel();
+                                    database.ref('/users/' + child).once('value', function (userSnapshot) {
+                                        otherUser_1.update(userSnapshot.val());
+                                        self.userCache[child] = otherUser_1;
+                                    });
+                                }
+                                commentArray.push({
+                                    comment: data[child].content,
+                                    timestamp: data[child].timestamp,
+                                    user: ko.observable(otherUser_1)
+                                });
+                                location.comments(commentArray);
+                            }
+                        };
+                        for (child in data) {
+                            _loop_1();
+                        }
+                    });
+                    // zoom map
+                    map.setZoom(12);
+                    // pan map
+                    map.panTo(ko.toJS(location.position));
+                }
+            };
+            // handle clicks from list
+            this.listClick = function (location) {
+                self.changeLocation(location);
+                location.info().load();
+                location.marker.setAnimation(google.maps.Animation.BOUNCE);
+            };
+        }
+        // filter location list using search string
+        MainViewModel.prototype.filter = function (value) {
+            value = value.toLowerCase();
+            ko.utils.arrayForEach(this.locations(), function (location) {
+                if (location.title.toLowerCase().indexOf(value) !== -1) {
+                    location.setVisibility(true);
+                    location.marker.setAnimation(google.maps.Animation.BOUNCE);
+                    setTimeout(function () {
+                        location.marker.setAnimation(null);
+                    }, BOUNCE_TIME);
+                }
+                else {
+                    location.setVisibility(false);
+                }
+            });
+        };
+        // load JSON data
+        MainViewModel.prototype.load = function () {
+            var self = this;
+            loadJSON('data/app.json')
+                .then(function (jsonData) {
+                self.loaded = true;
+                ko.mapping.fromJS(JSON.parse(jsonData), {
+                    locations: {
+                        create: function (options) {
+                            return new MapLocation(options.data, self.currentLocation);
+                        },
+                        key: function (data) {
+                            return ko.utils.unwrapObservable(data.placeID);
+                        }
+                    }
+                }, self);
+                ko.utils.arrayForEach(self.locations(), function (location, index) {
+                    location.setVisibility(true, index * DELAY_TIME);
+                });
+            });
+        };
+        // reset location list when search input is empty
+        MainViewModel.prototype.reset = function () {
+            ko.utils.arrayForEach(this.locations(), function (location) {
+                location.setVisibility(true);
+                location.marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function () {
+                    location.marker.setAnimation(null);
+                }, BOUNCE_TIME);
+            });
+        };
+        return MainViewModel;
+    }());
     // Model for location
     var MapLocation = (function () {
         // construct from location data
@@ -248,122 +364,6 @@ var MapApp;
         };
         return MapLocation;
     }());
-    // main view (list and map)
-    var MainViewModel = (function () {
-        // construct using user model (for comment form)
-        function MainViewModel(userModel) {
-            var self = this;
-            this.locations = ko.observableArray([]);
-            this.currentLocation = ko.observable(null);
-            this.user = ko.observable(userModel);
-            this.userCache = {};
-            this.online = ko.observable(true);
-            this.loaded = false;
-            // load JSON data
-            this.load();
-            // function to change selected location
-            this.changeLocation = function (location) {
-                var previous = self.currentLocation();
-                // disable bounce animation if previous location was selected and is not the same
-                if (previous && previous !== location) {
-                    previous.marker.setAnimation(null);
-                    // stop watching firebase for previous location
-                    database.ref('/tips/' + previous.placeID).off();
-                }
-                self.currentLocation(location);
-                // start firebase monitoring back up on new location
-                if (location) {
-                    database.ref('/tips/' + location.placeID).on('value', function (snapshot) {
-                        var commentArray = [];
-                        var child;
-                        var data = snapshot.val();
-                        var _loop_1 = function() {
-                            if (data.hasOwnProperty(child)) {
-                                var otherUser_1;
-                                if (self.userCache[child]) {
-                                    otherUser_1 = self.userCache[child];
-                                }
-                                else {
-                                    otherUser_1 = new PublicUserModel();
-                                    database.ref('/users/' + child).once('value', function (userSnapshot) {
-                                        otherUser_1.update(userSnapshot.val());
-                                        self.userCache[child] = otherUser_1;
-                                    });
-                                }
-                                commentArray.push({
-                                    comment: data[child].content,
-                                    timestamp: data[child].timestamp,
-                                    user: ko.observable(otherUser_1)
-                                });
-                                location.comments(commentArray);
-                            }
-                        };
-                        for (child in data) {
-                            _loop_1();
-                        }
-                    });
-                    // zoom map
-                    map.setZoom(12);
-                    // pan map
-                    map.panTo(ko.toJS(location.position));
-                }
-            };
-            // handle clicks from list
-            this.listClick = function (location) {
-                self.changeLocation(location);
-                location.info().load();
-                location.marker.setAnimation(google.maps.Animation.BOUNCE);
-            };
-        }
-        // load JSON data
-        MainViewModel.prototype.load = function () {
-            var self = this;
-            loadJSON('data/app.json')
-                .then(function (jsonData) {
-                self.loaded = true;
-                ko.mapping.fromJS(JSON.parse(jsonData), {
-                    locations: {
-                        create: function (options) {
-                            return new MapLocation(options.data, self.currentLocation);
-                        },
-                        key: function (data) {
-                            return ko.utils.unwrapObservable(data.placeID);
-                        }
-                    }
-                }, self);
-                ko.utils.arrayForEach(self.locations(), function (location, index) {
-                    location.setVisibility(true, index * DELAY_TIME);
-                });
-            });
-        };
-        // filter location list using search string
-        MainViewModel.prototype.filter = function (value) {
-            value = value.toLowerCase();
-            ko.utils.arrayForEach(this.locations(), function (location) {
-                if (location.title.toLowerCase().indexOf(value) !== -1) {
-                    location.setVisibility(true);
-                    location.marker.setAnimation(google.maps.Animation.BOUNCE);
-                    setTimeout(function () {
-                        location.marker.setAnimation(null);
-                    }, BOUNCE_TIME);
-                }
-                else {
-                    location.setVisibility(false);
-                }
-            });
-        };
-        // reset location list when search input is empty
-        MainViewModel.prototype.reset = function () {
-            ko.utils.arrayForEach(this.locations(), function (location) {
-                location.setVisibility(true);
-                location.marker.setAnimation(google.maps.Animation.BOUNCE);
-                setTimeout(function () {
-                    location.marker.setAnimation(null);
-                }, BOUNCE_TIME);
-            });
-        };
-        return MainViewModel;
-    }());
     // model for public users
     var PublicUserModel = (function () {
         function PublicUserModel(userData) {
@@ -394,7 +394,7 @@ var MapApp;
             }
             this.update(userData);
             this.loggedIn = ko.pureComputed(function () {
-                return (self.id()) ? true : false;
+                return !!(self.id());
             });
         }
         UserModel.prototype.update = function (userData) {
@@ -419,6 +419,14 @@ var MapApp;
             });
         });
     }
+    function hideActive() {
+        if (activePanel) {
+            activePanel.classList.remove('active');
+        }
+        overlayPane.classList.remove('active');
+    }
+    // set overlay to dismiss active panel
+    overlayPane.addEventListener('click', hideActive);
     // start the app
     function init() {
         // create user model
@@ -519,44 +527,6 @@ var MapApp;
         });
     }
     MapApp.init = init;
-    // set overlay to dismiss active panel
-    overlayPane.addEventListener('click', hideActive);
-    function hideActive() {
-        if (activePanel) {
-            activePanel.classList.remove('active');
-        }
-        overlayPane.classList.remove('active');
-    }
-    // toggle user menu
-    function toggleUserPanel() {
-        activePanel = userPopup;
-        userPopup.classList.toggle('active');
-        overlayPane.classList.toggle('active');
-    }
-    MapApp.toggleUserPanel = toggleUserPanel;
-    // toggle controls for small screens
-    //noinspection JSUnusedLocalSymbols
-    function toggleControls() {
-        activePanel = controls;
-        controls.classList.toggle('active');
-        overlayPane.classList.toggle('active');
-    }
-    MapApp.toggleControls = toggleControls;
-    // attempt to log the user in
-    //noinspection JSUnusedLocalSymbols
-    function logIn() {
-        // Authenticate user with a Firebase Popup
-        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    }
-    MapApp.logIn = logIn;
-    // load the user out
-    //noinspection JSUnusedLocalSymbols
-    function logOut() {
-        toggleUserPanel();
-        firebase.auth().signOut();
-    }
-    MapApp.logOut = logOut;
-    //noinspection JSUnusedLocalSymbols
     // start rendering the map and init the app
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -584,6 +554,32 @@ var MapApp;
         }
     }
     MapApp.initMap = initMap;
+    // attempt to log the user in
+    function logIn() {
+        // Authenticate user with a Firebase Popup
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    }
+    MapApp.logIn = logIn;
+    // load the user out
+    function logOut() {
+        toggleUserPanel();
+        firebase.auth().signOut();
+    }
+    MapApp.logOut = logOut;
+    // toggle user menu
+    function toggleUserPanel() {
+        activePanel = userPopup;
+        userPopup.classList.toggle('active');
+        overlayPane.classList.toggle('active');
+    }
+    MapApp.toggleUserPanel = toggleUserPanel;
+    // toggle controls for small screens
+    function toggleControls() {
+        activePanel = controls;
+        controls.classList.toggle('active');
+        overlayPane.classList.toggle('active');
+    }
+    MapApp.toggleControls = toggleControls;
     //noinspection TsLint
     if (MapApp.librariesLoaded["GoogleMaps"]) {
         MapApp.initMap();
