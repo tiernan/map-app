@@ -24,7 +24,6 @@ Simply, follow the steps below to launch a simple local server:
 6. You should now be able to access the website at [localhost:8080](http://localhost:8080)
 
 Once done, press Ctrl + C in the terminal to tell gulp to stop serving.
-Unzip this entire archive, then open index.html with your favorite browser.
 
 ## Credits
 
